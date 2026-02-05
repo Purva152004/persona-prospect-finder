@@ -36,7 +36,7 @@ The system is built with a strong focus on **compliance, security, and clean arc
 ---
 
 ## Architecture Overview
-
+```
 Frontend (React + Vite)
 |
 | REST API
@@ -48,12 +48,13 @@ Backend (FastAPI)
 ├── De-duplication
 ├── Google Sheets Exporter
 └── SQLite Storage
+```
 
 
 ---
 
 ## Project Structure
-
+```
 persona-prospect-finder/
 │
 ├── backend/
@@ -86,7 +87,7 @@ persona-prospect-finder/
 │ └── google-sheet-screenshot.png
 │
 └── README.md
-
+```
 
 ---
 
