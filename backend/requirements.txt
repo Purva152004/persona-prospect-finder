@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-dotenv
+google-api-python-client
+google-auth
+slowapi
