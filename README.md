@@ -105,9 +105,10 @@ npm run dev
 ```
 
 ## Use Cases
-
+```
 Full-stack portfolio project
 Internship or academic submission
 Google Sheets automation
 API integration practice
 Prospect management demo
+```
