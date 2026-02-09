@@ -28,7 +28,8 @@ function PersonaForm() {
     setLoading(true);
     setMessage("");
 
-    try {
+    try { 
+      
       await fetch(`${API_URL}/prospects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

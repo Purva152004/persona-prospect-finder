@@ -10,8 +10,7 @@ frontend/.env
 # Database
 *.db
 
-# Google credentials
-*.json
+
 
 # Node
 frontend/node_modules/
