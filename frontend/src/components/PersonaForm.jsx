@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 
 function PersonaForm() {
@@ -17,6 +18,8 @@ function PersonaForm() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -26,7 +29,7 @@ function PersonaForm() {
     setMessage("");
 
     try {
-      await fetch("http://127.0.0.1:8000/prospects", {
+      await fetch(`${API_URL}/prospects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
