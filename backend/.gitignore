@@ -2,3 +2,4 @@ __pycache__/
 .env
 *.db
 sheets-creds.json
+persona-prospect-finder-d4fd1f54cfde.json
