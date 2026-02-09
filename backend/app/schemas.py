@@ -1,24 +1,14 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 
 class PersonaInput(BaseModel):
+    first_name: Optional[str] = "-"
+    last_name: Optional[str] = "-"
     jobTitle: str
-    experience: int
-    location: str
-    industry: str
-    keywords: Optional[List[str]] = []
-
-class ProspectOut(BaseModel):
-    first_name: str
-    last_name: str
-    title: str
-    company: str
+    company: Optional[str] = "-"
     location: str
     industry: str
     experience: int
-    profile_url: str
-    email: str
-    phone: str
-    score: int
-    reason: str
-    source: str
+    profile_url: Optional[str] = "-"
+    email: Optional[str] = "-"
+    phone: Optional[str] = "-"

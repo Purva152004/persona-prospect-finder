@@ -1,11 +1,15 @@
-const React = require("react")
-const PersonaForm = require("./components/PersonaForm")
+import React from "react";
+import PersonaForm from "./components/PersonaForm";
 
-module.exports = function App() {
+function App() {
   return (
-    <div>
-      <h2>Persona → Prospect Finder</h2>
-      <PersonaForm />
+    <div className="app-container">
+      <div className="card">
+        <h2>Persona → Prospect Finder</h2>
+        <PersonaForm />
+      </div>
     </div>
-  )
+  );
 }
+
+export default App;

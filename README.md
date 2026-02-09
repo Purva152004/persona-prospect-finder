@@ -1,111 +1,113 @@
-# Persona → Prospect Finder + Google Sheets Export
+# Persona Prospect Finder
 
-A full-stack application that takes a **persona definition** (job title, experience, location, industry, etc.) and returns a **ranked list of matching professional profiles**, with the ability to **export results to Google Sheets and Excel**.  
-The system is built with a strong focus on **compliance, security, and clean architecture**.
+Persona Prospect Finder is a full-stack web application that allows users to submit persona or prospect details through a modern frontend UI and automatically store the data in a structured Google Sheet.  
+The project also uses seeded dummy data for testing and demonstration.
 
 ---
-
 ## Features
 
-- Persona-based prospect search
-- Apollo-style connector using a seeded dataset (no scraping)
-- Match scoring (0–100) with clear explanations
-- Profile de-duplication across sources
-- PII-safe handling (email/phone only if legally available)
-- Export results to **Google Sheets**
-- Environment-based configuration
-- Modular and extensible backend design
+- Modern, responsive React user interface  
+- FastAPI backend with REST APIs  
+- Automatic export of data to Google Sheets  
+- Structured and formatted sheet output  
+- Seeded dummy prospect data for testing  
+- Secure Google Sheets integration using Service Account  
+- Beginner-friendly project structure  
 
 ---
-
 ## Tech Stack
 
 ### Frontend
 - React (Vite)
-- Axios
+- JavaScript (ES6+)
+- CSS
 
 ### Backend
 - Python
 - FastAPI
-- Pydantic
+- Uvicorn
 - Google Sheets API
-
-### Storage
-- SQLite (local)
+- python-dotenv
 
 ---
-
-## Architecture Overview
-```
-Frontend (React + Vite)
-|
-| REST API
-v
-Backend (FastAPI)
-├── Persona Normalizer
-├── Apollo Connector (Seeded Data)
-├── Scoring Engine
-├── De-duplication
-├── Google Sheets Exporter
-└── SQLite Storage
-```
-
-
----
-
 ## Project Structure
-```
+
+```text
 persona-prospect-finder/
 │
 ├── backend/
-│ ├── app/
-│ │ ├── main.py
-│ │ ├── routes/prospect.py
-│ │ ├── services/
-│ │ │ ├── persona_normalizer.py
-│ │ │ ├── apollo_connector.py
-│ │ │ ├── scorer.py
-│ │ │ ├── deduplicator.py
-│ │ │ └── sheets_exporter.py
-│ │ ├── schemas.py
-│ │ └── seed/apollo_seed.json
-│ ├── requirements.txt
-│ ├── .env (ignored)
-│ └── .gitignore
+│   ├── app/
+│   │   ├── routes/
+│   │   │   └── prospect.py
+│   │   ├── services/
+│   │   │   ├── sheets_exporter.py
+│   │   │   ├── apollo_connector.py
+│   │   │   ├── persona_normalizer.py
+│   │   │   └── scorer.py
+│   │   ├── seed/
+│   │   │   └── apollo_seed.json
+│   │   ├── schemas.py
+│   │   └── main.py
+│   ├── requirements.txt
+│   └── .env
 │
 ├── frontend/
-│ ├── src/
-│ │ ├── App.jsx
-│ │ ├── main.jsx
-│ │ └── components/PersonaForm.jsx
-│ ├── index.html
-│ ├── package.json
-│ └── vite.config.js
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── PersonaForm.jsx
+│   │   ├── styles.css
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
 │
-├── sample-output/
-│ ├── prospects.xlsx
-│ └── google-sheet-screenshot.png
-│
+├── .gitignore
 └── README.md
 ```
+## Prerequisites
 
----
-
-## Setup & Run Instructions
-
-### 🔹 Prerequisites
-
-- Python 3.9+
-- Node.js 18+
+- Node.js (v18 or higher)
+- Python (v3.10 or higher)
 - Git
-- Google Cloud account (for Sheets API)
+- Google Cloud account with Google Sheets API enabled
 
 ---
+## Google Sheets Setup
 
-### Backend Setup (FastAPI)
+1. Create a Google Cloud Project  
+2. Enable **Google Sheets API**  
+3. Create a **Service Account**  
+4. Copy the Service Account email  
+5. Share your Google Sheet with that email (**Editor access**)  
+6. Add credentials in the `.env` file  
 
-```bash
+## Running Project
+
+### Backend (FastAPI)
+```
 cd backend
 python -m venv venv
-venv\Scripts\activate   
+venv\Scripts\activate
 pip install -r requirements.txt
+python -m uvicorn app.main:app --reload
+```
+### Frontend (React)
+```
+cd frontend
+npm install
+npm run dev
+```
+
+## Google Sheet Output Format
+```
+| First Name | Last Name | Title | Company | Location | Industry | Experience | Profile URL | Email | Phone | Score | Source |
+|-----------|-----------|-------|---------|----------|----------|------------|-------------|-------|-------|-------|--------|
+```
+
+## Use Cases
+
+Full-stack portfolio project
+Internship or academic submission
+Google Sheets automation
+API integration practice
+Prospect management demo

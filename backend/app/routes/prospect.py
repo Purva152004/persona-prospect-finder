@@ -11,32 +11,47 @@ router = APIRouter()
 @router.post("/prospects")
 def get_prospects(persona: PersonaInput):
     normalized = normalize(persona)
+
+    # 1. Store persona input (formatted like Apollo)
+    export_to_sheets([[
+        normalized["first_name"],
+        normalized["last_name"],
+        normalized["title"],
+        normalized["company"],
+        normalized["location"],
+        normalized["industry"],
+        normalized["experience"],
+        normalized["profile_url"],
+        normalized["email"],
+        normalized["phone"],
+        "-",                 # score
+        "USER"               # source
+    ]])
+
+    # 2. Fetch Apollo profiles
     profiles = fetch_apollo_profiles(normalized)
 
     output = []
-
     for p in profiles:
         score, reason = score_profile(p, normalized)
         output.append({
             **p,
-            "email": p["email"] or "not available",
-            "phone": p["phone"] or "not available",
+            "email": p.get("email") or "not available",
+            "phone": p.get("phone") or "not available",
             "score": score,
-            "reason": reason,
             "source": "Apollo (Seeded)"
         })
 
     output = deduplicate(output)
-    output.sort(key=lambda x: x["score"], reverse=True)
 
-    sheet_rows = [
-        [
-            o["first_name"], o["last_name"], o["title"], o["company"],
-            o["location"], o["industry"], o["experience"],
-            o["profile_url"], o["email"], o["phone"],
-            o["score"], o["source"]
-        ] for o in output
-    ]
+    if output:
+        export_to_sheets([
+            [
+                o["first_name"], o["last_name"], o["title"], o["company"],
+                o["location"], o["industry"], o["experience"],
+                o["profile_url"], o["email"], o["phone"],
+                o["score"], o["source"]
+            ] for o in output
+        ])
 
-    #export_to_sheets(sheet_rows)
     return output
