@@ -57,6 +57,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def health():
+    return {"status": "API is running"}
 
 @app.get("/force-sheet-test")
 def force_sheet_test():

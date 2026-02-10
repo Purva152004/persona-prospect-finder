@@ -25,27 +25,32 @@ function PersonaForm() {
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setMessage("");
+  setLoading(true);
+  setMessage("");
 
-    try { 
-      //fetch
-      await fetch(`${API_URL}/prospects`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          experience: Number(form.experience)
-        })
-      });
+  try {
+    const res = await fetch(`${API_URL}/prospects`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...form,
+        experience: Number(form.experience)
+      })
+    });
 
-      setMessage("Exported successfully to Google Sheets");
-    } catch {
-      setMessage("Failed to connect to backend");
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
     }
-  };
+
+    setMessage("✅ Data successfully stored in Google Sheets");
+  } catch (err) {
+    console.error(err);
+    setMessage("❌ Backend error. Check logs.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="form-wrapper">
