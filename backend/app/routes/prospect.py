@@ -69,7 +69,7 @@ router = APIRouter()
 def get_prospects(persona: PersonaInput):
     normalized = normalize(persona)
 
-    # ✅ 1. STORE USER ROW FIRST (IMPORTANT)
+    #  1. STORE USER ROW FIRST (IMPORTANT)
     export_to_sheets([[
         normalized["first_name"],
         normalized["last_name"],
@@ -85,7 +85,7 @@ def get_prospects(persona: PersonaInput):
         "USER"        # source
     ]])
 
-    # ✅ 2. FETCH SEEDED APOLLO DATA
+    #  2. FETCH SEEDED APOLLO DATA
     profiles = fetch_apollo_profiles(normalized)
 
     output = []
@@ -103,7 +103,7 @@ def get_prospects(persona: PersonaInput):
     output = deduplicate(output)
     output.sort(key=lambda x: x["score"], reverse=True)
 
-    # ✅ 3. STORE APOLLO ROWS
+    #  3. STORE APOLLO ROWS
     if output:
         rows = [[
             o["first_name"],
