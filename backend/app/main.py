@@ -81,7 +81,7 @@ from app.routes.prospect import router
 app = FastAPI(title="Persona Prospect Finder")
 
 CLIENT_URL = os.getenv("CLIENT_URL", "http://localhost:5173")
-
+print(CLIENT_URL);
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[CLIENT_URL],
