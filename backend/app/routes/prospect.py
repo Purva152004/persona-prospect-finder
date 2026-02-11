@@ -1,10 +1,8 @@
-
 from fastapi import APIRouter
 from app.schemas import PersonaInput
 from app.services.persona_normalizer import normalize
 from app.services.apollo_connector import fetch_apollo_profiles
 from app.services.scorer import score_profile
-from app.services.deduplicator import deduplicate
 from app.services.sheets_exporter import export_to_sheets
 
 router = APIRouter()
@@ -13,8 +11,42 @@ router = APIRouter()
 def get_prospects(persona: PersonaInput):
     normalized = normalize(persona)
 
-    #  1. STORE USER ROW FIRST (IMPORTANT)
-    export_to_sheets([[
+    profiles = fetch_apollo_profiles(normalized)
+    matched_rows = []
+
+    # Check for exact match in Apollo seed
+    for p in profiles:
+        is_match = (
+            p["first_name"].lower() == normalized["first_name"].lower()
+            and p["last_name"].lower() == normalized["last_name"].lower()
+            and p["company"].lower() == normalized["company"].lower()
+            and p["title"].lower() == normalized["title"].lower()
+        )
+
+        if is_match:
+            score, _ = score_profile(p, normalized)
+            matched_rows.append([
+                p["first_name"],
+                p["last_name"],
+                p["title"],
+                p["company"],
+                p["location"],
+                p["industry"],
+                p["experience"],
+                p["profile_url"],
+                p.get("email") or "not available",
+                p.get("phone") or "not available",
+                score,
+                "Apollo (Seeded)"
+            ])
+
+    #  If match found → store ONLY Apollo row(s)
+    if matched_rows:
+        export_to_sheets(matched_rows)
+        return {"stored": "apollo", "rows": matched_rows}
+
+    # Else → store ONLY USER row
+    user_row = [[
         normalized["first_name"],
         normalized["last_name"],
         normalized["title"],
@@ -25,45 +57,9 @@ def get_prospects(persona: PersonaInput):
         normalized["profile_url"],
         normalized["email"],
         normalized["phone"],
-        "-",          # score
-        "USER"        # source
-    ]])
+        "-",
+        "USER"
+    ]]
 
-    #  2. FETCH SEEDED APOLLO DATA
-    profiles = fetch_apollo_profiles(normalized)
-
-    output = []
-
-    for p in profiles:
-        score, reason = score_profile(p, normalized)
-        output.append({
-            **p,
-            "email": p.get("email") or "not available",
-            "phone": p.get("phone") or "not available",
-            "score": score,
-            "source": "Apollo (Seeded)"
-        })
-
-    output = deduplicate(output)
-    output.sort(key=lambda x: x["score"], reverse=True)
-
-    #  3. STORE APOLLO ROWS
-    if output:
-        rows = [[
-            o["first_name"],
-            o["last_name"],
-            o["title"],
-            o["company"],
-            o["location"],
-            o["industry"],
-            o["experience"],
-            o["profile_url"],
-            o["email"],
-            o["phone"],
-            o["score"],
-            o["source"]
-        ] for o in output]
-
-        export_to_sheets(rows)
-
-    return output
+    export_to_sheets(user_row)
+    return {"stored": "user", "rows": user_row}
